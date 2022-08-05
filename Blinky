@@ -1,0 +1,132 @@
+package PACMANtest;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.util.Duration;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+
+public class Blinky extends Spøkelse{
+    public int posX,posY;
+    Image bilde;
+    Timeline animation;
+    enum Retning {
+        OPP,
+        NED,
+        VENSTRE,
+        HØYRE
+    }
+    Retning retning;
+    {
+        try {
+            bilde = new Image(new FileInputStream("src/Blinky.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    ImageView blinky;
+    public Blinky(int x,int y,int høyde,int bredde,int posX,int posY){
+        super(x,y,høyde,bredde,posX,posY);
+        blinky = new ImageView(bilde);//starter som stillestående Blinky
+        blinky.setX(x);
+        blinky.setY(y);
+        blinky.setFitHeight(høyde);
+        blinky.setFitWidth(bredde);
+        this.posX=posX;
+        this.posY=posY;
+        retning = Retning.OPP;
+    }
+
+    public double getY(){
+        return blinky.getY();
+    }
+    public int getPosY(){
+        return posY;
+    }
+    public int getPosX(){
+        return posX;
+    }
+    public void bevegVenstre(){
+        posX--;
+    }
+    public void bevegHøyre(){
+        posX++;
+    }
+    public void bevegOpp(){
+        posY--;
+    }
+    public void bevegNed(){
+        posY++;
+    }
+    public double getX(){
+        return blinky.getX();
+    }
+    public void setX(double x){
+        blinky.setX(x);
+    }
+
+    @Override
+    public void setY(int y) {
+        blinky.setY(y);
+    }
+
+    public void setY(double y){
+        blinky.setY(y);
+    }
+    public void setPosX(int posX) {
+        this.posX=posX;
+    }
+
+    @Override
+    public void setPosY(int y) {
+        this.posY=y;
+    }
+
+    @Override
+    public ImageView getSpøkelse() {
+        return blinky;
+    }
+    public void blinkyAnimasjon(){
+        animation = new Timeline(
+                new KeyFrame(Duration.millis(5000), e -> blinkyBevegelse()));
+        animation.setCycleCount(Timeline.INDEFINITE);
+        animation.play(); // Start animation
+    }
+    public void blinkyBevegelse() {
+        ArrayList <Retning> bevegelse = new ArrayList<>();
+            if (TestPACPane.posTab[posX][posY+1] != 1) {
+                bevegelse.add(Retning.NED);
+            }
+            if (TestPACPane.posTab[posX][posY - 1] != 1) { // opp
+                bevegelse.add(Retning.OPP);
+            }
+            if (TestPACPane.posTab[posX - 1][posY] != 1) { //venstre
+                bevegelse.add(Retning.VENSTRE);
+            }
+            if (TestPACPane.posTab[posX + 1][posY] != 1) { // høyre
+                bevegelse.add(Retning.HØYRE);
+            }
+            retning = bevegelse.get((int)(Math.random() * bevegelse.size()) + 0);
+
+            if (retning.equals(Retning.HØYRE)) {
+                blinky.setX(blinky.getX() + TestPACPane.recStrX);
+                posX++;
+            } else if (retning.equals(Retning.NED)) {
+                blinky.setY(blinky.getY() + TestPACPane.recStrY);
+                posY++;
+            } else if (retning.equals(Retning.OPP)) {
+                blinky.setY(blinky.getY() - TestPACPane.recStrY);
+                posY--;
+            } else if (retning.equals(Retning.VENSTRE)) {
+                blinky.setX(blinky.getX() - TestPACPane.recStrX);
+                posX--;
+            }
+            bevegelse.clear();
+        }
+
+    }

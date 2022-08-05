@@ -1,0 +1,54 @@
+package PACMANtest;
+
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+
+import java.util.ArrayList;
+
+public class Mat {
+    public static ArrayList<Mat> matList = new ArrayList<>();
+    public int x,y,radius,posX,posY;
+    public Circle sirkel;
+
+    public Mat () {
+
+    }
+
+    public Mat (int x, int y, int radius ,int posX, int posY) {
+        sirkel = new Circle ();
+        sirkel.setCenterX(x);
+        sirkel.setCenterY(y);
+        sirkel.setRadius(radius);
+        sirkel.setFill(Color.BLUE);
+        this.posX=posX;
+        this.posY=posY;
+        addMat(this);
+    }
+
+    public void spisMat () {
+        sirkel.setVisible(false);
+    }
+
+    public ArrayList <Mat> getMatList () {
+        return matList;
+    }
+
+    public void addMat (Mat m) {
+        matList.add(m);
+    }
+
+    public Circle getCircle(){
+        return sirkel;
+    }
+    public int getPosX(){
+        return posX;
+    }
+    public int getPosY(){
+        return posY;
+    }
+
+    // kan være greit å lage en metode som sletter arraylist hvis vi skal ha flere baner
+
+}
+
+

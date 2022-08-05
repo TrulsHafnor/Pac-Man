@@ -1,0 +1,46 @@
+package PACMANtest;
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
+
+import static PACMANtest.TestPACPane.posTab;
+
+public class TestPAC extends Application {
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    final static int MAX_X = 600;
+    final static int MAX_Y = 600;
+    @Override
+    public void start(Stage primaryStage) {
+        TestPACPane t = new TestPACPane(MAX_X,MAX_Y);
+
+
+        Scene scene = new Scene(t.borderPane, MAX_X, MAX_Y);
+        primaryStage.setTitle("Pacman"); // Set the stage title
+        primaryStage.setScene(scene); // Place the scene in the stage
+        primaryStage.show(); // Display the stage
+
+        // retning!=Retning.VENSTRE
+       scene.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.LEFT && !(TestPACPane.retning.equals(TestPACPane.Retning.VENSTRE))){
+                    t.venstre();
+                }
+            if(e.getCode() == KeyCode.RIGHT && !(TestPACPane.retning.equals(TestPACPane.Retning.HØYRE))){
+                    t.høyre();
+            }
+           if(e.getCode() == KeyCode.DOWN && !(TestPACPane.retning.equals(TestPACPane.Retning.NED))){
+                   t.ned();
+           }
+           if(e.getCode() == KeyCode.UP && !(TestPACPane.retning.equals(TestPACPane.Retning.OPP))){
+                   t.opp();
+               }
+        });
+
+
+    }
+}

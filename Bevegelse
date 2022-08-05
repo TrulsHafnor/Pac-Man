@@ -1,0 +1,51 @@
+public final double radius = 20;
+    private double x = str/2, y = str/2;
+    private double dx = 1, dy = 1;
+
+animation = new Timeline(
+                new KeyFrame(Duration.millis(50), e -> bevegelse()));
+        animation.setCycleCount(Timeline.INDEFINITE);
+        //animation.play(); // Start animation
+    }
+    //Må sjekke alle pikslene i sirklene for å få fjernet den.
+    public void bevegelse(){
+
+    }
+    public void venstre(){
+        x -= dx;
+        sirkel.setCenterX(x);
+        sirkel.setCenterY(sirkel.getCenterY());
+        animation = new Timeline(
+                new KeyFrame(Duration.millis(1), e -> venstre()));
+        //animation.setCycleCount(Timeline.INDEFINITE);
+        animation.play(); // Start animation
+        spis();
+    }
+ public void spis(){
+        double xDif = sirkel.getCenterX()-mat.getCenterX();
+        double yDif = sirkel.getCenterY()-mat.getCenterY();
+        double distanseKvadrert = xDif * xDif + yDif * yDif;
+        boolean kollisjon = distanseKvadrert < (sirkel.getRadius() + mat.getRadius()) * (sirkel.getRadius() + mat.getRadius());
+        if(kollisjon == true){
+            //animation.stop();
+            mat.setVisible(false);
+        }
+        
+ t.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.LEFT) {
+                t.stop();
+                t.venstre();
+            }
+            if(e.getCode() == KeyCode.RIGHT){
+                t.stop();
+              t.høyre();
+            }
+           if(e.getCode() == KeyCode.DOWN){
+               t.stop();
+               t.ned();
+           }
+           if(e.getCode() == KeyCode.UP){
+               t.stop();
+               t.opp();
+           }
+        });

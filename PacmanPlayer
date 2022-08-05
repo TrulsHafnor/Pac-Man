@@ -1,0 +1,73 @@
+package PACMANtest;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+public class PacmanPlayer {
+    public int posX,posY;
+    Image bilde;
+
+    {
+        try {
+            bilde = new Image(new FileInputStream("src/packman.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    ImageView packman;
+
+    public PacmanPlayer(int x,int y,int høyde,int bredde,int posX,int posY){
+
+
+            packman = new ImageView(bilde);//starter som stillestående packman
+        packman.setX(x);
+            packman.setY(y);
+            packman.setFitHeight(høyde);
+            packman.setFitWidth(bredde);
+            this.posX=posX;
+            this.posY=posY;
+    }
+    public double getX(){
+        return packman.getX();
+    }
+    public double getY(){
+        return packman.getY();
+    }
+    public int getPosY(){
+        return posY;
+    }
+    public int getPosX(){
+        return posX;
+    }
+    public void bevegVenstre(){
+        posX--;
+    }
+    public void bevegHøyre(){
+        posX++;
+    }
+    public void bevegOpp(){
+        posY--;
+    }
+    public void bevegNed(){
+        posY++;
+    }
+    public void setX(double x){
+        packman.setX(x);
+    }
+    public void setY(double y){
+        packman.setY(y);
+    }
+    public void setPosX(int posX) {
+        this.posX=posX;
+    }
+
+    public ImageView getPackman(){
+        return packman;
+    }
+
+}

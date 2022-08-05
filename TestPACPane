@@ -1,0 +1,250 @@
+package PACMANtest;
+
+import TestAnimation.PackmanPane;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.ListView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.TilePane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class TestPACPane extends Pane {
+    static BorderPane borderPane;
+    private PacmanPlayer sirkel;
+    private Pane pane;
+    Blinky blinky;
+    private Timeline animation;
+    int vinduX, vinduY;
+    static int recStrX;
+    static int recStrY;
+    private double dx = recStrX, dy = recStrY;
+    private TilePane tilePane;
+    static int posTab[][];
+    int strX;
+    int strY;
+    int speed = 250;
+    static enum Retning {
+        VENSTRE,
+        HØYRE,
+        OPP,
+        NED,
+        START
+    }
+    static Retning retning;
+
+    public TestPACPane(int vinduX, int vinduY){
+        retning = Retning.START;
+        this.vinduX = vinduX;
+        this.vinduY = vinduY;
+        borderPane = new BorderPane();
+        pane = new Pane();
+            pane.setMinHeight(vinduY);
+            pane.setMaxHeight(vinduY);
+            pane.setMaxWidth(vinduX);
+            pane.setMinWidth(vinduX);
+            pane.getChildren().add(lesFil(vinduX,vinduY));
+            leggTilMat();
+        borderPane.setCenter(pane);
+
+
+        Rectangle r3 = new Rectangle(0,vinduX,vinduY,25);
+            r3.setFill(Color.YELLOW);
+
+        animation = new Timeline(
+                new KeyFrame(Duration.millis(750), e -> bevegelse()));
+        animation.setCycleCount(Timeline.INDEFINITE);
+        animation.play(); // Start animation
+    }
+    public void bevegelse(){
+        blinky.blinkyAnimasjon();
+    }
+    /*
+    * Flytter Pacman objektet til venstre.
+    * Void
+     */
+    public void venstre(){
+        if (posTab[sirkel.getPosX()-1][sirkel.getPosY()] ==5) {
+            stop();
+            sirkel.setPosX(strX-1);
+            sirkel.setX(recStrX*(strX-1));
+            animation = new Timeline(
+                    new KeyFrame(Duration.millis(speed), e -> venstre()));
+            //animation.setCycleCount(Timeline.INDEFINITE);
+            animation.play(); // Start animation
+            spis(sirkel.getPosX(), sirkel.getPosY());
+            retning = Retning.VENSTRE;
+            System.out.println(sirkel.getPosX() + " " + sirkel.getPosY());
+        }
+
+
+        else if(posTab[sirkel.getPosX()-1][sirkel.getPosY()] != 1 ) {
+            stop();
+            sirkel.bevegVenstre();
+            sirkel.setX(sirkel.getX()-dx);
+            animation = new Timeline(
+                    new KeyFrame(Duration.millis(speed), e -> venstre()));
+            //animation.setCycleCount(Timeline.INDEFINITE);
+            animation.play(); // Start animation
+            spis(sirkel.getPosX(),sirkel.getPosY());
+            retning = Retning.VENSTRE;
+            System.out.println(sirkel.getPosX() + " " + sirkel.getPosY());
+        }
+    }
+    public void høyre(){
+        if (posTab[sirkel.getPosX()+1][sirkel.getPosY()] ==5) {
+            stop();
+            //sirkel.bevegHøyre();
+            sirkel.setPosX(0);
+            sirkel.setX(0);
+            animation = new Timeline(
+                    new KeyFrame(Duration.millis(speed), e -> høyre()));
+            //animation.setCycleCount(Timeline.INDEFINITE);
+            animation.play(); // Start animation
+            spis(sirkel.getPosX(),sirkel.getPosY());
+            retning = Retning.HØYRE;
+            System.out.println(sirkel.getPosX() + " " + sirkel.getPosY());
+
+        } else if(posTab[sirkel.getPosX()+1][sirkel.getPosY()] !=1 ) {
+            stop();
+            sirkel.bevegHøyre();
+
+            sirkel.setX(sirkel.getX()+dx);
+            animation = new Timeline(
+                    new KeyFrame(Duration.millis(speed), e -> høyre()));
+            //animation.setCycleCount(Timeline.INDEFINITE);
+            animation.play(); // Start animation
+            spis(sirkel.getPosX(),sirkel.getPosY());
+            retning = Retning.HØYRE;
+            System.out.println(sirkel.getPosX() + " " + sirkel.getPosY());
+        }
+    }
+    public void ned(){
+        if (posTab[sirkel.getPosX()][sirkel.getPosY()+1] !=1 && (posTab[sirkel.getPosX()][sirkel.getPosY()+1] !=4)) {
+            stop();
+            sirkel.bevegNed();
+            sirkel.setY(sirkel.getY()+dy);
+            animation = new Timeline(
+                    new KeyFrame(Duration.millis(speed), e -> ned()));
+            //animation.setCycleCount(Timeline.INDEFINITE);
+            animation.play(); // Start animation
+            spis(sirkel.getPosX(),sirkel.getPosY());
+            retning = Retning.NED;
+            System.out.println(sirkel.getPosX() + " " + sirkel.getPosY());
+        }
+    }
+    public void opp(){
+        if (posTab[sirkel.getPosX()][sirkel.getPosY()-1] != 1) {
+            stop();
+            sirkel.bevegOpp();
+            sirkel.setY(sirkel.getY()-dy);
+            animation = new Timeline(
+                    new KeyFrame(Duration.millis(speed), e -> opp()));
+            //animation.setCycleCount(Timeline.INDEFINITE);
+            animation.play(); // Start animation
+            spis(sirkel.getPosX(),sirkel.getPosY());
+            retning = Retning.OPP;
+            System.out.println(sirkel.getPosX() + " " + sirkel.getPosY());
+        }
+    }
+    public void stop(){
+        animation.stop();
+    }
+    public void play(){
+        animation.play();
+    }
+    /*
+    * lesFil - Leser fra fil og returerer kartet.
+    * @param lengde. Angir lengden på viduet.
+    * @param høyde. Angir høyden på viduet.
+    * @return tilepane. Sender tilbake en tilpane med kartet lest fra gitt fil.
+    */
+    public TilePane lesFil (int lengde, int høyde){ // kalle den legg til bane?
+        Scanner scr = null;
+        File fil = new File("src/test2.txt");
+        try{
+            scr = new Scanner(fil);
+            strX = scr.nextInt();
+            strY = scr.nextInt();
+            tilePane = new TilePane(strX,strY);
+                tilePane.setHgap(0);
+                tilePane.setVgap(0);
+                tilePane.setMinHeight(pane.getMaxHeight());
+                tilePane.setMaxHeight(pane.getMaxHeight());
+                tilePane.setMinWidth(pane.getMaxWidth());
+                tilePane.setMaxWidth(pane.getMaxWidth());
+
+            posTab = new int[strX][strY];
+            for(int y = 0; scr.hasNextLine(); y++){
+                for(int x = 0; x < strX; x++){
+                    posTab [x][y] = scr.nextInt();
+                    System.out.print(posTab[x][y]);
+                    if(posTab[x][y] == 1){
+                        Rectangle r1 = new Rectangle(0,0,vinduX/strX,vinduY/strY);
+                        r1.setFill(Color.RED);
+                        //r1.setStroke(Color.RED);
+                        tilePane.getChildren().add(r1);
+                    }else {
+                        Rectangle r2 = new Rectangle(0,0,vinduX/strX,vinduY/strY);
+                        r2.setFill(Color.BLACK);
+
+                        tilePane.getChildren().add(r2);
+                    }
+                }
+                System.out.println();
+            }
+        }catch(Exception FileNotFoundException){
+            //System.out.println("Fil ikke funnet");
+        }
+        recStrX = vinduX/strX;
+        recStrY = vinduY/strY;
+        dx = recStrX;
+        dy = recStrY;
+        scr.close();
+        return tilePane;
+    }
+    public void leggTilMat(){ // burde bytte navn til legg til effekt
+        for(int y = 0; y<strX; y++){
+            for(int x = 0; x<strY; x++){ // legger til mat
+                if(posTab[y][x] == 0) {
+                    Mat mat = new Mat((recStrX / 2) + recStrX * y, (recStrY / 2) + recStrY * x, recStrX/2-5,x,y);
+                    pane.getChildren().addAll(mat.getCircle());
+                } else if (posTab[y][x] == 2) { // legger til power ups
+                    Circle c = new Circle((recStrX / 2) + recStrX * y, (recStrY / 2) + recStrY * x, recStrX/2-5);
+                        c.setFill(Color.GREEN);
+                    pane.getChildren().add(c);
+                }else if(posTab[y][x] == 3){
+                    sirkel = new PacmanPlayer(recStrX*y,recStrY*x,recStrY,recStrX,y,x);
+                    pane.getChildren().add(sirkel.getPackman());
+                }else if(posTab[y][x] == 7){
+                    blinky = new Blinky(recStrX*y, recStrY*x, recStrY,recStrX, y,x);
+                    pane.getChildren().add(blinky.getSpøkelse());
+                    blinky.blinkyBevegelse();
+                    System.out.println(blinky.getPosX() + " " + blinky.getPosY());
+                }
+            }
+        }
+    }
+    public void spis (int x,int y) {
+        for (Mat ma:Mat.matList) {
+            if (sirkel.getPosY()==ma.getPosX() && sirkel.getPosX()==ma.getPosY()) {
+                ma.spisMat();
+            }
+        }
+    }
+}
+
